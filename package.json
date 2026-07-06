@@ -1,0 +1,76 @@
+{
+	"name": "@owservable/sqlite",
+	"version": "3.0.0",
+	"description": "owservable sqlite backend adapter: journal-trigger live updates, MikroORM entities and process entities",
+	"engines": {
+		"node": ">=24.12.0"
+	},
+	"main": "./lib/owservable.sqlite.js",
+	"types": "./lib/owservable.sqlite.d.ts",
+	"author": "Predrag Stojadinovic <predrag@stojadinovic.net>",
+	"license": "Unlicense",
+	"files": [
+		"lib/**/*"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/owservable/sqlite.git"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"minimumReleaseAge": 2880,
+	"scripts": {
+		"all": "pnpm i & pnpm dedupe & pnpm audit --fix=update & pnpm clean & pnpm format & pnpm build & skeletest -f & strictr -f & pnpm test & pnpm integration & pnpm run docs @owservable/sqlite",
+		"clear:lib": "del /S /Q lib\\*",
+		"build": "pnpm clear:lib & tsc",
+		"build:watch": "tsc --watch",
+		"lint": "eslint .",
+		"clean": "eslint --fix .",
+		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+		"docs": "typedoc --readme none --out docs ./src/owservable.sqlite.ts",
+		"sync": "git pull & git fetch origin & git merge origin/main & pnpm i & git branch",
+		"test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --coverage --config jest.config.js",
+		"integration": "ts-node test/integration/sqlite.integration.ts",
+		"quick": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --config jest.config.js",
+		"coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",
+		"test_qube": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --coverage --config jest.config.js --testResultsProcessor=jest-sonar-reporter",
+		"up": "pnpm up -i",
+		"latest": "pnpm up -i -L",
+		"l": "pnpm i & pnpm latest",
+		"preinstall": "npx only-allow pnpm"
+	},
+	"dependencies": {
+		"@mikro-orm/core": "^7.1.5",
+		"@mikro-orm/sqlite": "^7.1.5",
+		"@owservable/core": "^3.0.0",
+		"@owservable/folders": "^2.2.2",
+		"@types/lodash": "^4.17.24",
+		"@types/node": "^26.1.0",
+		"lodash": "^4.18.1",
+		"rxjs": "^7.8.2"
+	},
+	"devDependencies": {
+		"@eslint/js": "^10.0.1",
+		"@types/jest": "^30.0.0",
+		"@types/rewire": "^2.5.30",
+		"better-sqlite3": "^12.11.1",
+		"coveralls": "^3.1.1",
+		"eslint": "^10.6.0",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-sonarjs": "^4.1.0",
+		"jest": "^30.4.2",
+		"jest-sonar-reporter": "^2.0.0",
+		"prettier": "^3.9.4",
+		"rewire": "^9.0.1",
+		"skeletest": "^0.7.5",
+		"source-map-support": "^0.5.21",
+		"strictr": "^0.5.7",
+		"ts-jest": "^29.4.11",
+		"ts-node": "^10.9.2",
+		"typedoc": "^0.28.19",
+		"typescript": "^6.0.3",
+		"typescript-eslint": "^8.62.1"
+	},
+	"packageManager": "pnpm@11.10.0"
+}

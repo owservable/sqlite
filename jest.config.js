@@ -1,0 +1,72 @@
+module.exports = {
+	preset: 'ts-jest',
+	testEnvironment: 'node',
+	roots: ['<rootDir>/src', '<rootDir>/test'],
+
+	// Test file patterns
+	testMatch: ['**/test/**/*.spec.ts'],
+
+	// TypeScript configuration
+	transform: {
+		'^.+\\.ts$': [
+			'ts-jest',
+			{
+				tsconfig: 'tsconfig.test.json'
+			}
+		],
+		'^.+\\.js$': [
+			'ts-jest',
+			{
+				tsconfig: {
+					allowJs: true,
+					module: 'commonjs',
+					moduleResolution: 'node10',
+					esModuleInterop: true
+				}
+			}
+		]
+	},
+
+	// Module file extensions
+	moduleFileExtensions: ['ts', 'js', 'json'],
+
+	// Transform ignore patterns - allow jsondiffpatch to be transformed (pnpm layout)
+	transformIgnorePatterns: [
+		'node_modules[/\\\\](?!\\.pnpm|jsondiffpatch)',
+		'node_modules[/\\\\]\\.pnpm[/\\\\](?!jsondiffpatch@)'
+	],
+
+	// Setup Jest types globally
+	setupFilesAfterEnv: [],
+
+	// Coverage configuration
+	collectCoverageFrom: ['src/**/*.ts', '!src/**/*.d.ts', '!src/**/*.spec.ts', '!src/**/*.test.ts'],
+
+	// Coverage output directory
+	coverageDirectory: 'coverage',
+
+	// Coverage reporters
+	coverageReporters: ['lcov', 'html', 'text', 'text-summary'],
+
+	// Coverage thresholds (optional)
+	coverageThreshold: {
+		global: {
+			branches: 100,
+			functions: 100,
+			lines: 100,
+			statements: 100
+		}
+	},
+
+	// Clear mocks between tests
+	clearMocks: true,
+
+	// Verbose output
+	// verbose: true,
+
+	// Exit on test failure
+	// forceExit: true,
+
+	// Timeout for tests (30 seconds like mocha config)
+	testTimeout: 30000
+};

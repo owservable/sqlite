@@ -1,0 +1,36 @@
+{
+	"compilerOptions": {
+		"allowJs": true,
+		"target": "es6",
+		"module": "nodenext",
+		"moduleResolution": "nodenext",
+		"types": ["node"],
+		"skipLibCheck": true,
+		"isolatedModules": true,
+		"resolveJsonModule": true,
+		"removeComments": true,
+		"preserveConstEnums": true,
+		"sourceMap": true,
+		"declaration": true,
+		"rootDir": "./src",
+		"outDir": "./lib",
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"noImplicitAny": true,
+		"strict": true,
+		"strictNullChecks": false,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true
+	},
+	"include": [
+		"./src/**/*"
+	],
+	"exclude": [
+		".idea",
+		".sonarlint",
+		"coverage",
+		"docs",
+		"node_modules",
+		"test"
+	]
+}

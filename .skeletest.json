@@ -1,0 +1,9 @@
+{
+	"srcFolderName": "src",
+	"filesExtensions": ["ts"],
+	"testFolderName": "test",
+	"testFileExtensionPrefix": "spec",
+	"testExtension": "ts",
+	"ignoreSrcFiles": ["src/types/"],
+	"ignoreTestFiles": ["test/functions/fixtures", "test/integration"]
+}
