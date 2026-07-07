@@ -15,11 +15,11 @@ importers:
         specifier: ^7.1.5
         version: 7.1.5(@mikro-orm/core@7.1.5)
       '@owservable/core':
-        specifier: ^3.0.0
-        version: 3.0.0
+        specifier: ^3.1.0
+        version: 3.1.0
       '@owservable/folders':
-        specifier: ^2.2.2
-        version: 2.2.2
+        specifier: ^3.1.0
+        version: 3.1.0
       '@types/lodash':
         specifier: ^4.17.24
         version: 4.17.24
@@ -85,8 +85,8 @@ importers:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@26.1.0)(typescript@6.0.3)
       typedoc:
-        specifier: ^0.28.19
-        version: 0.28.19(typescript@6.0.3)
+        specifier: ^0.28.20
+        version: 0.28.20(typescript@6.0.3)
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -507,16 +507,16 @@ packages:
       '@emnapi/core': ^1.7.1
       '@emnapi/runtime': ^1.7.1
 
-  '@owservable/actions@2.2.2':
-    resolution: {integrity: sha512-itjzu6prvS6A4qhxpOk5d8OFwx+bHrELDogsa/WBRNyvKq8OHQ6c1BuLaoETbAhP7819XmnNxBpyf68EsUzlXQ==}
+  '@owservable/actions@3.1.0':
+    resolution: {integrity: sha512-p3YfihEwLbyh6ZXN5Q7ocFd/PFDpFNS7Pl9zTiJ0NqCv52Mn5/R5Qz3EgNsoX5LB6lz9PeFIrB0PEPLU+5mIuw==}
     engines: {node: '>=24.12.0'}
 
-  '@owservable/core@3.0.0':
-    resolution: {integrity: sha512-Vu23VQNZCCRTCbeRWcae//5cOesOkNlFnDHK+s91CqiY/TOmrN21qBxx8gAJtteunJwAhb7MsRiJH+vyPEr5dQ==}
+  '@owservable/core@3.1.0':
+    resolution: {integrity: sha512-icQKOTCVKhJ5V+RVVXrPcQlcoB/6f9FdOvCodMmytILklKY8X1DIK+NqDTTa3lXJLsDOtkrlMmDhDQdkA/hTmw==}
     engines: {node: '>=24.12.0'}
 
-  '@owservable/folders@2.2.2':
-    resolution: {integrity: sha512-Z6AHB7dus5X5+W6kSXljtO7GxUrTJlZFB7/WqWuJiNftUkqIR/Q8/0Yk/QjlwkmKAKhz/tS05iGbX9nndEI1gg==}
+  '@owservable/folders@3.1.0':
+    resolution: {integrity: sha512-yQ+ALWdo98n5G+V3tOcaTaskEVGYJoeIX+aY3Ifg7PqXaeHY2eX1qdVagxeH8vJctyVYuOnhAzh/HRRcju5g+Q==}
     engines: {node: '>=24.12.0'}
 
   '@pkgjs/parseargs@0.11.0':
@@ -2282,8 +2282,8 @@ packages:
   type@2.7.3:
     resolution: {integrity: sha512-8j+1QmAbPvLZow5Qpi6NCaN8FB60p/6x8/vfNqOk/hC+HuvFZhL4+WfekuhQLiqFZXOgQdrs3B+XxEmCc6b3FQ==}
 
-  typedoc@0.28.19:
-    resolution: {integrity: sha512-wKh+lhdmMFivMlc6vRRcMGXeGEHGU2g8a2CkPTJjJlwRf1iXbimWIPcFolCqe4E0d/FRtGszpIrsp3WLpDB8Pw==}
+  typedoc@0.28.20:
+    resolution: {integrity: sha512-uSKqkh8Cr48vllnEy+jdaAgOeR6Y+QCBW7usgUsKj7gJEfR7stw9U/fE49LBnj2tPRKPY0c0EBJSWe9Appmplg==}
     engines: {node: '>= 18', pnpm: '>= 10'}
     hasBin: true
     peerDependencies:
@@ -2961,16 +2961,16 @@ snapshots:
       '@tybys/wasm-util': 0.10.3
     optional: true
 
-  '@owservable/actions@2.2.2':
+  '@owservable/actions@3.1.0':
     dependencies:
-      '@owservable/folders': 2.2.2
+      '@owservable/folders': 3.1.0
       '@types/node': 26.1.0
       commander: 14.0.3
 
-  '@owservable/core@3.0.0':
+  '@owservable/core@3.1.0':
     dependencies:
-      '@owservable/actions': 2.2.2
-      '@owservable/folders': 2.2.2
+      '@owservable/actions': 3.1.0
+      '@owservable/folders': 3.1.0
       '@types/lodash': 4.17.24
       '@types/node': 26.1.0
       '@types/node-cron': 3.0.11
@@ -2981,7 +2981,7 @@ snapshots:
       rxjs: 7.8.2
       sift: 17.1.3
 
-  '@owservable/folders@2.2.2':
+  '@owservable/folders@3.1.0':
     dependencies:
       '@types/node': 26.1.0
 
@@ -4935,7 +4935,7 @@ snapshots:
 
   type@2.7.3: {}
 
-  typedoc@0.28.19(typescript@6.0.3):
+  typedoc@0.28.20(typescript@6.0.3):
     dependencies:
       '@gerrit0/mini-shiki': 3.23.0
       lunr: 2.3.9
