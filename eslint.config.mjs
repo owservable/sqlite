@@ -57,5 +57,11 @@ export default tseslint.config(
 			'no-empty': 'off',
 			'sonarjs/pseudo-random': 'off'
 		}
+	},
+	{
+		files: ['src/functions/observable.table.ts', 'src/functions/process.entities.ts', 'test/functions/observable.table.spec.ts', 'test/integration/sqlite.integration.ts'],
+		rules: {
+			'@typescript-eslint/no-require-imports': 'off'
+		}
 	}
 );

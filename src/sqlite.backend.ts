@@ -2,7 +2,7 @@
 
 import {Observable} from 'rxjs';
 import {wrap} from '@mikro-orm/core';
-import {cloneDeep, each, isArray, isEmpty, isString, keys, omit} from 'lodash';
+import {cloneDeep, each, isEmpty, isString, omit} from 'lodash';
 
 import type {IObservableBackend} from '@owservable/core';
 
@@ -97,10 +97,10 @@ export default class SqliteBackend implements IObservableBackend {
 
 	private _translateQuery(query: any): any {
 		if (!query || isString(query)) return query;
-		if (isArray(query)) return query.map((entry: any): any => this._translateQuery(entry));
+		if (Array.isArray(query)) return query.map((entry: any): any => this._translateQuery(entry));
 
 		const translated: any = {};
-		each(keys(query), (key: string): void => {
+		each(Object.keys(query), (key: string): void => {
 			const value: any = query[key];
 			if ('_id' === key) translated[this._pkProperty] = value;
 			else if ('$and' === key || '$or' === key || '$nor' === key) translated[key] = this._translateQuery(value);
@@ -113,7 +113,7 @@ export default class SqliteBackend implements IObservableBackend {
 		if (isEmpty(sort)) return undefined;
 
 		const orderBy: any = {};
-		each(keys(sort), (key: string): void => {
+		each(Object.keys(sort), (key: string): void => {
 			const direction: any = sort[key];
 			orderBy[key] = -1 === direction || 'desc' === direction ? 'desc' : 'asc';
 		});
@@ -122,9 +122,9 @@ export default class SqliteBackend implements IObservableBackend {
 
 	private _translateFields(fields: any): string[] | undefined {
 		if (isEmpty(fields)) return undefined;
-		if (isArray(fields)) return fields;
+		if (Array.isArray(fields)) return fields;
 
-		const included: string[] = keys(fields).filter((key: string): boolean => !!fields[key]);
+		const included: string[] = Object.keys(fields).filter((key: string): boolean => !!fields[key]);
 		return isEmpty(included) ? undefined : included;
 	}
 
