@@ -73,6 +73,18 @@ describe('sqlite.backend tests', () => {
 		]);
 	});
 
+	it('should translate dotted sort keys into nested orderBy', async () => {
+		em.find.mockResolvedValue([]);
+
+		await backend.find({}, {}, undefined, {'contact_person.first_name': 1, 'contact_person.last_name': -1, 'type_id.name.sr_latn': 'desc', code: 1}, []);
+
+		expect(em.find.mock.calls[0][2].orderBy).toEqual({
+			contact_person: {first_name: 'asc', last_name: 'desc'},
+			type_id: {name: {sr_latn: 'desc'}},
+			code: 'asc'
+		});
+	});
+
 	it('should find entities with empty options translated to undefined', async () => {
 		em.find.mockResolvedValue([]);
 
