@@ -1,6 +1,6 @@
 {
 	"name": "@owservable/sqlite",
-	"version": "3.1.8",
+	"version": "3.1.9",
 	"description": "owservable sqlite backend adapter: journal-trigger live updates, MikroORM entities and process entities",
 	"engines": {
 		"node": ">=24.12.0"

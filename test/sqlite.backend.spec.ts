@@ -7,6 +7,7 @@ import {wrap} from '@mikro-orm/core';
 import SqliteBackend from '../src/sqlite.backend';
 import SqliteObservableTable from '../src/functions/observable.table';
 import SqliteObservableTablesMap from '../src/functions/observable.tables.map';
+import {UntranslatableQueryError} from '../src/functions/translate.query';
 
 jest.mock('@mikro-orm/core', () => ({wrap: jest.fn()}));
 
@@ -49,7 +50,7 @@ describe('sqlite.backend tests', () => {
 		em.find.mockResolvedValue([{id: 1}, {id: 2}]);
 
 		const result: any[] = await backend.find(
-			{_id: 7, name: 'x', $and: [{_id: '3'}, 'raw'], $or: {y: 1}, $nor: [{z: 2}]},
+			{_id: 7, name: 'x', $and: [{_id: '3'}], $or: [{y: 1}], $nor: [{z: 2}]},
 			{name: 1, secret: 0},
 			{skip: 5, limit: 10},
 			{a: 1, b: -1, c: 'desc', d: 'asc'},
@@ -58,7 +59,7 @@ describe('sqlite.backend tests', () => {
 
 		expect(em.find).toHaveBeenCalledWith(
 			UserEntity,
-			{id: 7, name: 'x', $and: [{id: '3'}, 'raw'], $or: {y: 1}, $nor: [{z: 2}]},
+			{id: 7, name: 'x', $and: [{id: '3'}], $or: [{y: 1}], $nor: [{z: 2}]},
 			{
 				fields: ['name'],
 				orderBy: [{a: 'asc'}, {b: 'desc'}, {c: 'desc'}, {d: 'asc'}],
@@ -154,6 +155,19 @@ describe('sqlite.backend tests', () => {
 				expect((Object.prototype as any).polluted).toBeUndefined();
 			}
 		);
+	});
+
+	it('should reject regex queries because SQLite has no REGEXP function', async () => {
+		await expect(backend.find({name: {$regex: 'a', $options: 'i'}}, null, null, null, null)).rejects.toThrow(UntranslatableQueryError);
+		expect(em.find).not.toHaveBeenCalled();
+	});
+
+	it('should translate nested relation and dotted conditions', async () => {
+		em.count.mockResolvedValue(0);
+
+		await backend.count({_id: {$in: [1]}, 'owner.name': {$like: 'a%'}});
+
+		expect(em.count).toHaveBeenCalledWith(UserEntity, {id: {$in: [1]}, owner: {name: {$like: 'a%'}}});
 	});
 
 	it('should find entities with empty options translated to undefined', async () => {

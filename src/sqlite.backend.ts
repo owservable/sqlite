@@ -9,6 +9,7 @@ import type {IObservableBackend} from '@owservable/core';
 import SqliteJournalPoller from './sqlite.journal.poller';
 import SqliteObservableTable from './functions/observable.table';
 import SqliteObservableTablesMap from './functions/observable.tables.map';
+import translateQuery from './functions/translate.query';
 
 const DESCENDING_SORT_VALUES: string[] = ['-1', 'desc', 'descending'];
 const UNSAFE_SORT_SEGMENTS: string[] = ['__proto__', 'constructor', 'prototype'];
@@ -17,6 +18,7 @@ export default class SqliteBackend implements IObservableBackend {
 	private readonly _orm: any;
 	private readonly _entity: any;
 	private readonly _poller: SqliteJournalPoller;
+	private readonly _meta: any;
 	private readonly _tableName: string;
 	private readonly _pkProperty: string;
 
@@ -25,9 +27,9 @@ export default class SqliteBackend implements IObservableBackend {
 		this._entity = entity;
 		this._poller = poller;
 
-		const meta: any = orm.getMetadata().get(entity.name);
-		this._tableName = meta.tableName;
-		this._pkProperty = meta.primaryKeys[0];
+		this._meta = orm.getMetadata().get(entity.name);
+		this._tableName = this._meta.tableName;
+		this._pkProperty = this._meta.primaryKeys[0];
 	}
 
 	public target(): string {
@@ -99,17 +101,7 @@ export default class SqliteBackend implements IObservableBackend {
 	}
 
 	private _translateQuery(query: any): any {
-		if (!query || isString(query)) return query;
-		if (Array.isArray(query)) return query.map((entry: any): any => this._translateQuery(entry));
-
-		const translated: any = {};
-		each(Object.keys(query), (key: string): void => {
-			const value: any = query[key];
-			if ('_id' === key) translated[this._pkProperty] = value;
-			else if ('$and' === key || '$or' === key || '$nor' === key) translated[key] = this._translateQuery(value);
-			else translated[key] = value;
-		});
-		return translated;
+		return translateQuery(query, this._meta, {regex: false});
 	}
 
 	private _translateSort(sort: any): any {
