@@ -61,7 +61,7 @@ describe('sqlite.backend tests', () => {
 			{id: 7, name: 'x', $and: [{id: '3'}, 'raw'], $or: {y: 1}, $nor: [{z: 2}]},
 			{
 				fields: ['name'],
-				orderBy: {a: 'asc', b: 'desc', c: 'desc', d: 'asc'},
+				orderBy: [{a: 'asc'}, {b: 'desc'}, {c: 'desc'}, {d: 'asc'}],
 				offset: 5,
 				limit: 10,
 				populate: ['rel', 'other']
@@ -73,16 +73,87 @@ describe('sqlite.backend tests', () => {
 		]);
 	});
 
-	it('should translate dotted sort keys into nested orderBy', async () => {
-		em.find.mockResolvedValue([]);
+	describe('sort translation', () => {
+		const orderByFor = async (sort: any): Promise<any> => {
+			em.find.mockResolvedValue([]);
+			await backend.find({}, {}, undefined, sort, []);
+			return em.find.mock.calls.at(-1)[2].orderBy;
+		};
 
-		await backend.find({}, {}, undefined, {'contact_person.first_name': 1, 'contact_person.last_name': -1, 'type_id.name.sr_latn': 'desc', code: 1}, []);
-
-		expect(em.find.mock.calls[0][2].orderBy).toEqual({
-			contact_person: {first_name: 'asc', last_name: 'desc'},
-			type_id: {name: {sr_latn: 'desc'}},
-			code: 'asc'
+		it.each([undefined, null, {}])('should return undefined for empty sort %p', async (sort: any) => {
+			expect(await orderByFor(sort)).toBeUndefined();
 		});
+
+		it.each([[['a']], ['a'], [1], [true]])('should return undefined for non-object sort %p', async (sort: any) => {
+			expect(await orderByFor(sort)).toBeUndefined();
+		});
+
+		it.each([
+			[1, 'asc'],
+			['asc', 'asc'],
+			['ASC', 'asc'],
+			[-1, 'desc'],
+			['-1', 'desc'],
+			['desc', 'desc'],
+			['DESC', 'desc'],
+			['descending', 'desc'],
+			['Descending', 'desc'],
+			[0, 'asc'],
+			[null, 'asc'],
+			[undefined, 'asc'],
+			['sideways', 'asc']
+		])('should translate direction %p to %p', async (direction: any, expected: string) => {
+			expect(await orderByFor({a: direction})).toEqual([{a: expected}]);
+		});
+
+		it('should keep the sort key order as priority', async () => {
+			expect(await orderByFor({c: 1, a: -1, b: 1})).toEqual([{c: 'asc'}, {a: 'desc'}, {b: 'asc'}]);
+		});
+
+		it('should translate dotted keys into nested entries, one per key', async () => {
+			expect(await orderByFor({'contact_person.first_name': 1, 'contact_person.last_name': -1, 'type_id.name.sr_latn': 'desc', code: 1})).toEqual([
+				{contact_person: {first_name: 'asc'}},
+				{contact_person: {last_name: 'desc'}},
+				{type_id: {name: {sr_latn: 'desc'}}},
+				{code: 'asc'}
+			]);
+		});
+
+		it('should keep both entries when a flat key is a prefix of a dotted key', async () => {
+			expect(await orderByFor({contact_person: 1, 'contact_person.first_name': -1})).toEqual([{contact_person: 'asc'}, {contact_person: {first_name: 'desc'}}]);
+		});
+
+		it('should keep both entries when a dotted key comes before its flat prefix', async () => {
+			expect(await orderByFor({'contact_person.first_name': -1, contact_person: 1})).toEqual([{contact_person: {first_name: 'desc'}}, {contact_person: 'asc'}]);
+		});
+
+		it('should keep numeric path segments as object keys, not arrays', async () => {
+			const orderBy: any = await orderByFor({'items.0.name': 1});
+			expect(orderBy).toEqual([{items: {'0': {name: 'asc'}}}]);
+			expect(Array.isArray(orderBy[0].items)).toBe(false);
+		});
+
+		it('should treat brackets in a key literally', async () => {
+			expect(await orderByFor({'a[0].b': 1})).toEqual([{'a[0]': {b: 'asc'}}]);
+		});
+
+		it('should ignore empty path segments', async () => {
+			expect(await orderByFor({'a..b': 1, '.c': -1, 'd.': 1})).toEqual([{a: {b: 'asc'}}, {c: 'desc'}, {d: 'asc'}]);
+		});
+
+		it('should drop keys without any path segment', async () => {
+			expect(await orderByFor({'.': 1, '..': -1, '': 1})).toBeUndefined();
+			expect(await orderByFor({'.': 1, a: -1})).toEqual([{a: 'desc'}]);
+		});
+
+		it.each(['__proto__.polluted', 'constructor.prototype.polluted', 'prototype.polluted', 'a.__proto__.polluted', 'a.constructor'])(
+			'should drop unsafe key %p without polluting prototypes',
+			async (key: string) => {
+				expect(await orderByFor({[key]: 1, safe: 1})).toEqual([{safe: 'asc'}]);
+				expect(({} as any).polluted).toBeUndefined();
+				expect((Object.prototype as any).polluted).toBeUndefined();
+			}
+		);
 	});
 
 	it('should find entities with empty options translated to undefined', async () => {

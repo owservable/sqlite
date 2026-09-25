@@ -2,13 +2,16 @@
 
 import {Observable} from 'rxjs';
 import {wrap} from '@mikro-orm/core';
-import {cloneDeep, each, isEmpty, isString, omit, set} from 'lodash';
+import {cloneDeep, each, isEmpty, isPlainObject, isString, omit, setWith} from 'lodash';
 
 import type {IObservableBackend} from '@owservable/core';
 
 import SqliteJournalPoller from './sqlite.journal.poller';
 import SqliteObservableTable from './functions/observable.table';
 import SqliteObservableTablesMap from './functions/observable.tables.map';
+
+const DESCENDING_SORT_VALUES: string[] = ['-1', 'desc', 'descending'];
+const UNSAFE_SORT_SEGMENTS: string[] = ['__proto__', 'constructor', 'prototype'];
 
 export default class SqliteBackend implements IObservableBackend {
 	private readonly _orm: any;
@@ -110,14 +113,15 @@ export default class SqliteBackend implements IObservableBackend {
 	}
 
 	private _translateSort(sort: any): any {
-		if (isEmpty(sort)) return undefined;
+		if (!isPlainObject(sort) || isEmpty(sort)) return undefined;
 
-		const orderBy: any = {};
+		const orderBy: any[] = [];
 		each(Object.keys(sort), (key: string): void => {
-			const direction: any = sort[key];
-			set(orderBy, key, -1 === direction || 'desc' === direction ? 'desc' : 'asc');
+			const path: string[] = key.split('.').filter(Boolean);
+			if (isEmpty(path) || path.some((segment: string): boolean => UNSAFE_SORT_SEGMENTS.includes(segment))) return;
+			orderBy.push(setWith({}, path, DESCENDING_SORT_VALUES.includes(String(sort[key]).toLowerCase()) ? 'desc' : 'asc', Object));
 		});
-		return orderBy;
+		return isEmpty(orderBy) ? undefined : orderBy;
 	}
 
 	private _translateFields(fields: any): string[] | undefined {
