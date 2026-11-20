@@ -1,6 +1,6 @@
 {
 	"name": "@owservable/sqlite",
-	"version": "3.2.0",
+	"version": "3.2.1",
 	"description": "owservable sqlite backend adapter: journal-trigger live updates, MikroORM entities and process entities",
 	"engines": {
 		"node": ">=24.12.0"
@@ -41,12 +41,12 @@
 		"preinstall": "npx only-allow pnpm"
 	},
 	"dependencies": {
-		"@mikro-orm/core": "^7.2.2",
-		"@mikro-orm/sqlite": "^7.2.2",
-		"@owservable/core": "^3.2.0",
-		"@owservable/folders": "^3.2.0",
-		"@types/lodash": "^4.17.25",
-		"@types/node": "^26.6.3",
+		"@mikro-orm/core": "^7.2.10",
+		"@mikro-orm/sqlite": "^7.2.10",
+		"@owservable/core": "^3.2.1",
+		"@owservable/folders": "^3.2.1",
+		"@types/lodash": "^4.17.27",
+		"@types/node": "^26.6.6",
 		"lodash": "^4.18.1",
 		"rxjs": "^7.8.2"
 	},
@@ -54,23 +54,23 @@
 		"@eslint/js": "^10.0.1",
 		"@types/jest": "^30.0.0",
 		"@types/rewire": "^2.5.30",
-		"better-sqlite3": "^13.0.3",
+		"better-sqlite3": "^13.2.0",
 		"coveralls": "^3.1.1",
-		"eslint": "^10.11.0",
+		"eslint": "^10.15.0",
 		"eslint-config-prettier": "^10.1.8",
-		"eslint-plugin-sonarjs": "^4.2.1",
+		"eslint-plugin-sonarjs": "^4.2.2",
 		"jest": "^30.5.2",
 		"jest-sonar-reporter": "^2.0.0",
-		"prettier": "^3.9.9",
+		"prettier": "^3.10.1",
 		"rewire": "^9.0.1",
-		"skeletest": "^0.7.5",
+		"skeletest": "^0.8.3",
 		"source-map-support": "^0.5.21",
-		"strictr": "^0.5.7",
-		"ts-jest": "^29.4.14",
+		"strictr": "^0.6.3",
+		"ts-jest": "^29.4.15",
 		"ts-node": "^10.9.2",
 		"typedoc": "^0.28.20",
 		"typescript": "^6.0.3",
-		"typescript-eslint": "^8.70.1"
+		"typescript-eslint": "^8.73.0"
 	},
-	"packageManager": "pnpm@12.6.0"
+	"packageManager": "pnpm@12.21.0"
 }
